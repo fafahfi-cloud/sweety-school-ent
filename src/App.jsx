@@ -3,7 +3,7 @@ import { supabase } from "./supabaseClient.js";
 import LoginScreen from "./LoginScreen.jsx";
 import {
   LayoutDashboard, Users, GraduationCap, CalendarDays, ClipboardList,
-  MessageSquare, BookOpen, LogOut, Sparkles, Chip,
+  MessageSquare, BookOpen, LogOut, Sparkles, Chip, X,
 } from "./ui.jsx";
 import { PALETTE, PAPER, INK } from "./tokens.js";
 import {
@@ -41,6 +41,7 @@ export default function App() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("dashboard");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
@@ -99,16 +100,30 @@ export default function App() {
 
   return (
     <div className="min-h-full w-full flex" style={{ background: PAPER, color: INK, fontFamily: "'Quicksand', sans-serif" }}>
-      <aside className="w-60 shrink-0 border-r border-black/5 bg-white flex flex-col">
-        <div className="px-5 py-4 border-b border-black/5">
-          <div className="font-black text-lg leading-tight" style={{ fontFamily: "'Baloo 2', sans-serif", color: PALETTE.purple }}>
-            Sweety School
+      {/* Mobile overlay */}
+      {menuOpen && (
+        <div className="fixed inset-0 bg-black/30 z-20 md:hidden" onClick={() => setMenuOpen(false)} />
+      )}
+
+      <aside
+        className={`w-64 md:w-60 shrink-0 border-r border-black/5 bg-white flex flex-col fixed md:static inset-y-0 left-0 z-30 transition-transform duration-200 ${
+          menuOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0`}
+      >
+        <div className="px-5 py-4 border-b border-black/5 flex items-center justify-between">
+          <div>
+            <div className="font-black text-lg leading-tight" style={{ fontFamily: "'Baloo 2', sans-serif", color: PALETTE.purple }}>
+              Sweety School
+            </div>
+            <div className="text-[11px] text-black/40 font-medium">Espace numérique de travail</div>
           </div>
-          <div className="text-[11px] text-black/40 font-medium">Espace numérique de travail</div>
+          <button onClick={() => setMenuOpen(false)} className="md:hidden text-black/40 p-1">
+            <X size={20} />
+          </button>
         </div>
-        <nav className="flex-1 py-3 px-2 space-y-1">
+        <nav className="flex-1 py-3 px-2 space-y-1 overflow-y-auto">
           {nav.map((n) => (
-            <button key={n.id} onClick={() => setTab(n.id)}
+            <button key={n.id} onClick={() => { setTab(n.id); setMenuOpen(false); }}
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors"
               style={{ background: tab === n.id ? n.color + "16" : "transparent", color: tab === n.id ? n.color : INK + "aa" }}>
               <n.icon size={18} />
@@ -124,15 +139,24 @@ export default function App() {
         </div>
       </aside>
 
-      <main className="flex-1 flex flex-col min-w-0">
-        <header className="flex items-center justify-between px-6 py-4 border-b border-black/5 bg-white">
-          <div>
-            <div className="text-xs font-semibold uppercase tracking-wide" style={{ color: roleColor }}>{roleLabel}</div>
-            <div className="font-bold text-lg">{profile.full_name}</div>
+      <main className="flex-1 flex flex-col min-w-0 w-full">
+        <header className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-black/5 bg-white gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <button onClick={() => setMenuOpen(true)} className="md:hidden shrink-0 p-1.5 rounded-lg border border-black/10">
+              <div className="w-4 h-0.5 bg-black/70 mb-1" />
+              <div className="w-4 h-0.5 bg-black/70 mb-1" />
+              <div className="w-4 h-0.5 bg-black/70" />
+            </button>
+            <div className="min-w-0">
+              <div className="text-xs font-semibold uppercase tracking-wide truncate" style={{ color: roleColor }}>{roleLabel}</div>
+              <div className="font-bold text-base sm:text-lg truncate">{profile.full_name}</div>
+            </div>
           </div>
-          <Chip color={roleColor}><Sparkles size={12} /> L'oiseau dans le nid</Chip>
+          <div className="hidden sm:block shrink-0">
+            <Chip color={roleColor}><Sparkles size={12} /> L'oiseau dans le nid</Chip>
+          </div>
         </header>
-        <div className="flex-1 overflow-auto p-6">
+        <div className="flex-1 overflow-auto p-3 sm:p-6">
           {tab === "dashboard" && <Dashboard profile={profile} />}
           {tab === "eleves" && <ElevesView profile={profile} />}
           {tab === "emploi" && <EmploiView profile={profile} />}

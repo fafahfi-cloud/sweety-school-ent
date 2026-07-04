@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { supabase } from "./supabaseClient.js";
 import { PALETTE, PAPER, INK } from "./tokens.js";
 
-function ButterflyMark({ style }) {
+function ButterflyMark({ style, className }) {
   return (
-    <svg viewBox="0 0 100 100" width="46" height="46" style={style}>
+    <svg viewBox="0 0 100 100" width="46" height="46" style={style} className={className}>
       <g opacity="0.9">
         <path d="M50 50 C20 10 0 20 8 45 C14 62 35 58 50 50 Z" fill={PALETTE.purple} />
         <path d="M50 50 C80 10 100 20 92 45 C86 62 65 58 50 50 Z" fill={PALETTE.blue} />
@@ -36,12 +36,12 @@ export default function LoginScreen() {
       className="min-h-full w-full flex items-center justify-center p-6 relative overflow-hidden"
       style={{ background: `radial-gradient(circle at 15% 15%, ${PALETTE.yellow}22, transparent 40%), radial-gradient(circle at 85% 85%, ${PALETTE.blue}22, transparent 40%), ${PAPER}` }}
     >
-      <ButterflyMark style={{ position: "absolute", top: 28, right: 60, transform: "rotate(12deg)" }} />
-      <ButterflyMark style={{ position: "absolute", bottom: 40, left: 50, transform: "rotate(-16deg) scale(0.8)" }} />
+      <ButterflyMark style={{ position: "absolute", top: 28, right: 60, transform: "rotate(12deg)" }} className="hidden sm:block" />
+      <ButterflyMark style={{ position: "absolute", bottom: 40, left: 50, transform: "rotate(-16deg) scale(0.8)" }} className="hidden sm:block" />
 
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-black/5 p-8 relative z-10">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-black/5 p-6 sm:p-8 relative z-10">
         <div className="text-center mb-6">
-          <h1 className="text-4xl font-black tracking-tight" style={{ fontFamily: "'Baloo 2', sans-serif" }}>
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight" style={{ fontFamily: "'Baloo 2', sans-serif" }}>
             <span style={{ color: PALETTE.red }}>S</span>
             <span style={{ color: PALETTE.purple }}>w</span>
             <span style={{ color: PALETTE.orange }}>e</span>
